@@ -23,9 +23,9 @@ const envitarMensagemUtalk = async (telefone, data) => {
     let id = get256RandomBits();
 
     await axios.get(
-      `https://v1.utalk.chat/send/${process.env.SECRET_UTALK}?cmd=chat&id=${id}&to=${telefone}&msg=${encodeURIComponent(
-        data
-      )}`
+      `https://v1.utalk.chat/send/${
+        process.env.SECRET_UTALK
+      }?cmd=chat&id=${id}&to=${telefone}&msg=${encodeURIComponent(data)}`
     );
   } catch (error) {
     console.error("Erro ao enviar mensagem para o Utalk", error);
@@ -50,7 +50,9 @@ const checkServices = async (comando) => {
     }
   }
 
-  let date = new Date().toLocaleString("pt-BR");
+  let date = new Date().toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+  });
   let mensagem = "";
   if (comando && comando === "daily") {
     mensagem = `ℹ️ *Status do serviços* ℹ️\n\nData/Hora: ${date}\n\nEstes são os status dos serviços:\n\n${mensagens.join(
