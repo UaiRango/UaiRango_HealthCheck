@@ -24,5 +24,7 @@ jobs:
           cmd: start
         env: 
           SERVICOS: ${{ secrets.SERVICOS }}
-          SECRET_UTALK: ${{ secrets.SECRET_UTALK }}
           LOCAIS: ${{ secrets.LOCAIS }}
+          URL_WHATSAPP: ${{ secrets.URL_WHATSAPP }}
+          WHATSAPP_API_SECRET: ${{ secrets.WHATSAPP_API_SECRET }}
+          TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
