@@ -18,17 +18,29 @@ function get256RandomBits(returnAsString = true) {
   }
 }
 
-const envitarMensagemUtalk = async (telefone, data) => {
-  try {
-    let id = get256RandomBits();
-
-    await axios.get(
-      `https://v1.utalk.chat/send/${
-        process.env.SECRET_UTALK
-      }?cmd=chat&id=${id}&to=${telefone}&msg=${encodeURIComponent(data)}`
-    );
-  } catch (error) {
-    console.error("Erro ao enviar mensagem para o Utalk", error);
+const enviarMensagem = async (type, id, data) => {
+  if (type === "whatsapp") {
+    try {
+      await axios.get(
+        `${process.env.URL_WHATSAPP}/wp/account/${
+          process.env.WHATSAPP_API_SECRET
+        }/send?cmd=text&to=${id}&msg=${encodeURIComponent(data)}`
+      );
+    } catch (error) {
+      console.error("Erro ao enviar mensagem para o WhatsApp", error);
+    }
+  } else if (type === "telegram") {
+    try {
+      await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_API_KEY}/sendMessage`,
+        {
+          chat_id: id,
+          text: data,
+        }
+      );
+    } catch (error) {
+      console.error("Erro ao enviar mensagem para o Telegram", error);
+    }
   }
 };
 
@@ -42,10 +54,10 @@ const checkServices = async (comando) => {
       console.log(`Checando ${service.name}...`);
       await axios.get(service.url, { timeout: 10000 });
       console.log(`Serviço ${service.name} is OK`);
-      mensagens.push(`✅ - ${service.name}`);
+      mensagens.push(`✅ -> ${service.name}`);
     } catch (error) {
       console.error(`Serviço ${service.name} is down`);
-      mensagens.push(`⛔ - ${service.name}`);
+      mensagens.push(`⛔ -> ${service.name}`);
       falhas++;
     }
   }
@@ -67,7 +79,7 @@ const checkServices = async (comando) => {
   }
 
   for (let local of locaisEnvio) {
-    await envitarMensagemUtalk(local, mensagem);
+    await enviarMensagem(local.type, local.id, mensagem);
   }
 };
 
